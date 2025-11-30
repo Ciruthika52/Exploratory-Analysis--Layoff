@@ -98,7 +98,35 @@ SELECT company,YEAR(`date`), sum(total_laid_off)
 FROM layoffs_staging2
 GROUP BY company,YEAR(`date`)
 ORDER BY 1 Asc;
-``
+```
 Breakdown of layoffs for each company annually.
 
 ## Top 5 Companies With Highest Layoffs per Year
+```sql
+WITH Company_Year AS
+(
+SELECT company,YEAR(`date`) as year, sum(total_laid_off) as total_off
+FROM layoffs_staging2
+GROUP BY company,YEAR(`date`)
+), Company_Year_Ranking AS
+(
+SELECT company,year, total_off,
+dense_rank() Over(partition by year order by total_off DESC) as ranking
+FROM Company_Year
+WHERE year is not null
+)
+SELECT *
+FROM Company_Year_Ranking
+WHERE ranking <=5;
+```
+Extracts the top 5 companies with the highest layoffs for each year.
+
+## Insights From the Analysis
+### 1. Companies with the highest total layoffs
+       The analysis highlights major global companies like Amazon,Meta,Google,Uber account for a large share of total layoffs.
+### 2. Industries with the highest total layoffs  
+       The Consumer and Retail industries experienced the highest layoffs. These two alone account for 88,795 layoffs, indicating heavy restructuring in consumer-facing sectors due to shifting demand, inflation,        and operational cost pressures.
+### 3. The United States Leads Layoff Numbers by Country
+       The U.S. appears as the country with the highest layoffs, aligning with its large concentration of global tech headquarters and startups.
+### 4. Layoff Activity Spans Multiple Years
+       The earliest and latest date checks show that layoffs occur over several years, not isolated to a single economic period.
