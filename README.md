@@ -101,8 +101,4 @@ ORDER BY 1 Asc;
 ``
 Breakdown of layoffs for each company annually.
 
-
-
-
-
-
+## Top 5 Companies With Highest Layoffs per Year
